@@ -72,8 +72,8 @@ class Cell extends BaseElement {
 	constructor({isShip, gameboard}) {
 		super();
 
-		this.gameboard = gameboard;
 		this.isShip = isShip; // true/false
+		this.gameboard = gameboard;
 		this.state = 'unknown';
 		this.onClick = this.fireTorpedo;
 	}
@@ -92,8 +92,19 @@ class Cell extends BaseElement {
 
 	fireTorpedo() {
 		if(this.isShip) {
-			this.setState('hit');
+			if (this.state !== 'unknown') {
+				return false;
+			}
+
 			this.gameboard.score++;
+
+			while (gameResult.firstChild) {
+				gameResult.removeChild(gameResult.firstChild)
+			}
+
+			gameResult.append(`${this.gameboard.score}/${this.gameboard.totalScore}`);
+
+			this.setState('hit');
 		} else {
 			this.setState('miss');
 		}
@@ -127,6 +138,8 @@ class Gameboard extends BaseElement {
 				}));
 			}
 		}
+
+		gameResult.append(`${this.score}/${this.totalScore}`);
 	}
 
 	createElement() {
